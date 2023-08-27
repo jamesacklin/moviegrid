@@ -2,14 +2,14 @@
 
 import { useState, useEffect, FC } from "react";
 
-interface DirectorList {
+interface AttributeList {
   rows: string[];
   cols: string[];
 }
 
 interface ApiResponse {
-  directors: DirectorList;
-  actors: string[][][];
+  attributes: AttributeList;
+  entities: string[][][];
   uuid: string;
   message: string;
 }
@@ -36,7 +36,7 @@ const HomePage: FC = () => {
     return <div>Loading...</div>;
   }
 
-  const { directors, actors } = data;
+  const { attributes, entities } = data;
 
   if (error) {
     return <div>{error}</div>;
@@ -47,7 +47,7 @@ const HomePage: FC = () => {
       <thead>
         <tr>
           <th className="border border-gray-400 p-2"></th>
-          {directors.cols.map((colDir, index) => (
+          {attributes.cols.map((colDir, index) => (
             <th className="text-left border border-gray-400 p-2" key={index}>
               {colDir}
             </th>
@@ -55,10 +55,10 @@ const HomePage: FC = () => {
         </tr>
       </thead>
       <tbody>
-        {actors.map((row, rowIndex) => (
+        {entities.map((row, rowIndex) => (
           <tr key={rowIndex}>
             <td className="font-bold border border-gray-400 p-2">
-              {directors.rows[rowIndex]}
+              {attributes.rows[rowIndex]}
             </td>
             {row.map((cell, cellIndex) => (
               <td className="border border-gray-400 p-2" key={cellIndex}>

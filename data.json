@@ -1,314 +1,314 @@
 [
   {
     "id": 1,
-    "name": "Actor A",
-    "directors": [
-      "Director 1",
-      "Director 2",
-      "Director 3",
-      "Director 4",
-      "Director 9",
-      "Director 10"
+    "name": "Entity A",
+    "attributes": [
+      "Attribute 1",
+      "Attribute 2",
+      "Attribute 3",
+      "Attribute 4",
+      "Attribute 9",
+      "Attribute 10"
     ]
   },
   {
     "id": 2,
-    "name": "Actor B",
-    "directors": [
-      "Director 1",
-      "Director 2",
-      "Director 3",
-      "Director 4",
-      "Director 7",
-      "Director 8"
+    "name": "Entity B",
+    "attributes": [
+      "Attribute 1",
+      "Attribute 2",
+      "Attribute 3",
+      "Attribute 4",
+      "Attribute 7",
+      "Attribute 8"
     ]
   },
   {
     "id": 3,
-    "name": "Actor C",
-    "directors": [
-      "Director 1",
-      "Director 2",
-      "Director 3",
-      "Director 4",
-      "Director 5",
-      "Director 6"
+    "name": "Entity C",
+    "attributes": [
+      "Attribute 1",
+      "Attribute 2",
+      "Attribute 3",
+      "Attribute 4",
+      "Attribute 5",
+      "Attribute 6"
     ]
   },
   {
     "id": 4,
-    "name": "Actor D",
-    "directors": [
-      "Director 5",
-      "Director 6",
-      "Director 7",
-      "Director 8",
-      "Director 1",
-      "Director 2"
+    "name": "Entity D",
+    "attributes": [
+      "Attribute 5",
+      "Attribute 6",
+      "Attribute 7",
+      "Attribute 8",
+      "Attribute 1",
+      "Attribute 2"
     ]
   },
   {
     "id": 5,
-    "name": "Actor E",
-    "directors": [
-      "Director 5",
-      "Director 6",
-      "Director 7",
-      "Director 8",
-      "Director 3",
-      "Director 4"
+    "name": "Entity E",
+    "attributes": [
+      "Attribute 5",
+      "Attribute 6",
+      "Attribute 7",
+      "Attribute 8",
+      "Attribute 3",
+      "Attribute 4"
     ]
   },
   {
     "id": 6,
-    "name": "Actor F",
-    "directors": [
-      "Director 5",
-      "Director 6",
-      "Director 7",
-      "Director 8",
-      "Director 9",
-      "Director 10"
+    "name": "Entity F",
+    "attributes": [
+      "Attribute 5",
+      "Attribute 6",
+      "Attribute 7",
+      "Attribute 8",
+      "Attribute 9",
+      "Attribute 10"
     ]
   },
   {
     "id": 7,
-    "name": "Actor G",
-    "directors": [
-      "Director 9",
-      "Director 10",
-      "Director 1",
-      "Director 5",
-      "Director 3",
-      "Director 7"
+    "name": "Entity G",
+    "attributes": [
+      "Attribute 9",
+      "Attribute 10",
+      "Attribute 1",
+      "Attribute 5",
+      "Attribute 3",
+      "Attribute 7"
     ]
   },
   {
     "id": 8,
-    "name": "Actor H",
-    "directors": [
-      "Director 9",
-      "Director 10",
-      "Director 1",
-      "Director 5",
-      "Director 4",
-      "Director 6"
+    "name": "Entity H",
+    "attributes": [
+      "Attribute 9",
+      "Attribute 10",
+      "Attribute 1",
+      "Attribute 5",
+      "Attribute 4",
+      "Attribute 6"
     ]
   },
   {
     "id": 9,
-    "name": "Actor I",
-    "directors": [
-      "Director 9",
-      "Director 10",
-      "Director 2",
-      "Director 6",
-      "Director 3",
-      "Director 5"
+    "name": "Entity I",
+    "attributes": [
+      "Attribute 9",
+      "Attribute 10",
+      "Attribute 2",
+      "Attribute 6",
+      "Attribute 3",
+      "Attribute 5"
     ]
   },
   {
     "id": 10,
-    "name": "Actor J",
-    "directors": [
-      "Director 9",
-      "Director 10",
-      "Director 2",
-      "Director 6",
-      "Director 4",
-      "Director 8"
+    "name": "Entity J",
+    "attributes": [
+      "Attribute 9",
+      "Attribute 10",
+      "Attribute 2",
+      "Attribute 6",
+      "Attribute 4",
+      "Attribute 8"
     ]
   },
   {
     "id": 11,
-    "name": "Actor K",
-    "directors": [
-      "Director 3",
-      "Director 4",
-      "Director 7",
-      "Director 8",
-      "Director 1",
-      "Director 9"
+    "name": "Entity K",
+    "attributes": [
+      "Attribute 3",
+      "Attribute 4",
+      "Attribute 7",
+      "Attribute 8",
+      "Attribute 1",
+      "Attribute 9"
     ]
   },
   {
     "id": 12,
-    "name": "Actor L",
-    "directors": [
-      "Director 3",
-      "Director 4",
-      "Director 7",
-      "Director 8",
-      "Director 2",
-      "Director 10"
+    "name": "Entity L",
+    "attributes": [
+      "Attribute 3",
+      "Attribute 4",
+      "Attribute 7",
+      "Attribute 8",
+      "Attribute 2",
+      "Attribute 10"
     ]
   },
   {
     "id": 13,
-    "name": "Actor M",
-    "directors": [
-      "Director 3",
-      "Director 4",
-      "Director 9",
-      "Director 10",
-      "Director 5",
-      "Director 7"
+    "name": "Entity M",
+    "attributes": [
+      "Attribute 3",
+      "Attribute 4",
+      "Attribute 9",
+      "Attribute 10",
+      "Attribute 5",
+      "Attribute 7"
     ]
   },
   {
     "id": 14,
-    "name": "Actor N",
-    "directors": [
-      "Director 3",
-      "Director 4",
-      "Director 9",
-      "Director 10",
-      "Director 6",
-      "Director 8"
+    "name": "Entity N",
+    "attributes": [
+      "Attribute 3",
+      "Attribute 4",
+      "Attribute 9",
+      "Attribute 10",
+      "Attribute 6",
+      "Attribute 8"
     ]
   },
   {
     "id": 15,
-    "name": "Actor O",
-    "directors": [
-      "Director 1",
-      "Director 5",
-      "Director 7",
-      "Director 9",
-      "Director 3",
-      "Director 6"
+    "name": "Entity O",
+    "attributes": [
+      "Attribute 1",
+      "Attribute 5",
+      "Attribute 7",
+      "Attribute 9",
+      "Attribute 3",
+      "Attribute 6"
     ]
   },
   {
     "id": 16,
-    "name": "Actor P",
-    "directors": [
-      "Director 2",
-      "Director 6",
-      "Director 8",
-      "Director 10",
-      "Director 4",
-      "Director 5"
+    "name": "Entity P",
+    "attributes": [
+      "Attribute 2",
+      "Attribute 6",
+      "Attribute 8",
+      "Attribute 10",
+      "Attribute 4",
+      "Attribute 5"
     ]
   },
   {
     "id": 17,
-    "name": "Actor Q",
-    "directors": [
-      "Director 1",
-      "Director 6",
-      "Director 7",
-      "Director 9",
-      "Director 4",
-      "Director 8"
+    "name": "Entity Q",
+    "attributes": [
+      "Attribute 1",
+      "Attribute 6",
+      "Attribute 7",
+      "Attribute 9",
+      "Attribute 4",
+      "Attribute 8"
     ]
   },
   {
     "id": 18,
-    "name": "Actor R",
-    "directors": [
-      "Director 2",
-      "Director 5",
-      "Director 8",
-      "Director 10",
-      "Director 3",
-      "Director 7"
+    "name": "Entity R",
+    "attributes": [
+      "Attribute 2",
+      "Attribute 5",
+      "Attribute 8",
+      "Attribute 10",
+      "Attribute 3",
+      "Attribute 7"
     ]
   },
   {
     "id": 19,
-    "name": "Actor S",
-    "directors": [
-      "Director 1",
-      "Director 4",
-      "Director 6",
-      "Director 9",
-      "Director 3",
-      "Director 8"
+    "name": "Entity S",
+    "attributes": [
+      "Attribute 1",
+      "Attribute 4",
+      "Attribute 6",
+      "Attribute 9",
+      "Attribute 3",
+      "Attribute 8"
     ]
   },
   {
     "id": 20,
-    "name": "Actor T",
-    "directors": [
-      "Director 2",
-      "Director 3",
-      "Director 5",
-      "Director 10",
-      "Director 4",
-      "Director 7"
+    "name": "Entity T",
+    "attributes": [
+      "Attribute 2",
+      "Attribute 3",
+      "Attribute 5",
+      "Attribute 10",
+      "Attribute 4",
+      "Attribute 7"
     ]
   },
   {
     "id": 21,
-    "name": "Actor U",
-    "directors": [
-      "Director 1",
-      "Director 3",
-      "Director 6",
-      "Director 8",
-      "Director 5",
-      "Director 9"
+    "name": "Entity U",
+    "attributes": [
+      "Attribute 1",
+      "Attribute 3",
+      "Attribute 6",
+      "Attribute 8",
+      "Attribute 5",
+      "Attribute 9"
     ]
   },
   {
     "id": 22,
-    "name": "Actor V",
-    "directors": [
-      "Director 2",
-      "Director 4",
-      "Director 7",
-      "Director 9",
-      "Director 6",
-      "Director 10"
+    "name": "Entity V",
+    "attributes": [
+      "Attribute 2",
+      "Attribute 4",
+      "Attribute 7",
+      "Attribute 9",
+      "Attribute 6",
+      "Attribute 10"
     ]
   },
   {
     "id": 23,
-    "name": "Actor W",
-    "directors": [
-      "Director 3",
-      "Director 5",
-      "Director 8",
-      "Director 10",
-      "Director 1",
-      "Director 7"
+    "name": "Entity W",
+    "attributes": [
+      "Attribute 3",
+      "Attribute 5",
+      "Attribute 8",
+      "Attribute 10",
+      "Attribute 1",
+      "Attribute 7"
     ]
   },
   {
     "id": 24,
-    "name": "Actor X",
-    "directors": [
-      "Director 4",
-      "Director 6",
-      "Director 7",
-      "Director 10",
-      "Director 2",
-      "Director 9"
+    "name": "Entity X",
+    "attributes": [
+      "Attribute 4",
+      "Attribute 6",
+      "Attribute 7",
+      "Attribute 10",
+      "Attribute 2",
+      "Attribute 9"
     ]
   },
   {
     "id": 25,
-    "name": "Actor Y",
-    "directors": [
-      "Director 1",
-      "Director 4",
-      "Director 8",
-      "Director 9",
-      "Director 3",
-      "Director 6"
+    "name": "Entity Y",
+    "attributes": [
+      "Attribute 1",
+      "Attribute 4",
+      "Attribute 8",
+      "Attribute 9",
+      "Attribute 3",
+      "Attribute 6"
     ]
   },
   {
     "id": 26,
-    "name": "Actor Z",
-    "directors": [
-      "Director 2",
-      "Director 3",
-      "Director 7",
-      "Director 10",
-      "Director 4",
-      "Director 5"
+    "name": "Entity Z",
+    "attributes": [
+      "Attribute 2",
+      "Attribute 3",
+      "Attribute 7",
+      "Attribute 10",
+      "Attribute 4",
+      "Attribute 5"
     ]
   }
 ]

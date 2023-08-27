@@ -3,19 +3,19 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import seedrandom from "seedrandom";
 
-// Define the structure for Actor data
-interface Actor {
+// Define the structure for Entity data
+interface Entity {
   id: number;
   name: string;
-  directors: string[];
+  attributes: string[];
 }
 
-// Read the actor data from a JSON file
+// Read the entity data from a JSON file
 const filePath = path.join(process.cwd(), "data.json");
-let actors: Actor[] = [];
+let entities: Entity[] = [];
 try {
   const fileData = fs.readFileSync(filePath, "utf8");
-  actors = JSON.parse(fileData);
+  entities = JSON.parse(fileData);
 } catch (error) {
   console.log(error);
 }
@@ -35,30 +35,30 @@ export async function GET() {
   // Create a random number generator based on the UUID
   const rng = seedrandom(uuid);
 
-  // Map to store directors and their associated actors
-  const directorMap: Record<string, Set<string>> = {};
-  // Set to store actors that have been used already
-  const usedActors: Set<string> = new Set();
+  // Map to store attributes and their associated entities
+  const attributeMap: Record<string, Set<string>> = {};
+  // Set to store entities that have been used already
+  const usedEntities: Set<string> = new Set();
 
-  // Populate directorMap with actors for each director
-  actors.forEach((actor) => {
-    actor.directors.forEach((director) => {
-      if (!directorMap[director]) {
-        directorMap[director] = new Set();
+  // Populate attributeMap with entities for each attribute
+  entities.forEach((entity) => {
+    entity.attributes.forEach((attribute) => {
+      if (!attributeMap[attribute]) {
+        attributeMap[attribute] = new Set();
       }
-      directorMap[director].add(actor.name);
+      attributeMap[attribute].add(entity.name);
     });
   });
 
-  // Identify directors who have worked with at least 3 actors
-  const eligibleDirectors = Object.keys(directorMap).filter(
-    (director) => Array.from(directorMap[director]).length >= 3
+  // Identify attributes who are associated with at least 3 entities
+  const eligibleAttributes = Object.keys(attributeMap).filter(
+    (attribute) => Array.from(attributeMap[attribute]).length >= 3
   );
 
-  // Check if there are at least 6 eligible directors
-  if (eligibleDirectors.length < 6) {
+  // Check if there are at least 6 eligible attributes
+  if (eligibleAttributes.length < 6) {
     return new Response(
-      JSON.stringify({ message: "Not enough eligible directors" }),
+      JSON.stringify({ message: "Not enough eligible attributes" }),
       {
         status: 200,
         headers: {
@@ -68,30 +68,31 @@ export async function GET() {
     );
   }
 
-  // Randomly shuffle the list of eligible directors
-  shuffle(eligibleDirectors, rng);
+  // Randomly shuffle the list of eligible attributes
+  shuffle(eligibleAttributes, rng);
 
-  // Select 3 directors for rows and 3 for columns
-  const rowDirectors = eligibleDirectors.slice(0, 3);
-  const colDirectors = eligibleDirectors.slice(3, 6);
+  // Select 3 attributes for rows and 3 for columns
+  const rowAttributes = eligibleAttributes.slice(0, 3);
+  const colAttributes = eligibleAttributes.slice(3, 6);
 
-  // Initialize the 3x3 matrix to store actor intersections
+  // Initialize the 3x3 matrix to store entity intersections
   const matrix: string[][][] = [];
 
-  for (let rowDir of rowDirectors) {
+  for (let rowAttr of rowAttributes) {
     const row: string[][] = [];
-    for (let colDir of colDirectors) {
-      let intersection = Array.from(directorMap[rowDir]).filter((actor) =>
-        directorMap[colDir].has(actor)
+    for (let colAttr of colAttributes) {
+      let intersection = Array.from(attributeMap[rowAttr]).filter((entity) =>
+        attributeMap[colAttr].has(entity)
       );
-      // Remove already used actors
-      intersection = intersection.filter((actor) => !usedActors.has(actor));
+      // Remove already used entities
+      intersection = intersection.filter((entity) => !usedEntities.has(entity));
 
-      // Ensure at least one actor intersection exists
+      // Ensure at least one entity intersection exists
       if (intersection.length < 1) {
         return new Response(
           JSON.stringify({
-            message: "Not enough actor/director intersections for a 3x3 matrix",
+            message:
+              "Not enough entity/attribute intersections for a 3x3 matrix",
           }),
           {
             status: 200,
@@ -102,13 +103,13 @@ export async function GET() {
         );
       }
 
-      // Randomly shuffle the intersection and pick one actor
+      // Randomly shuffle the intersection and pick one entity
       shuffle(intersection, rng);
-      const chosenActor = intersection[0];
-      usedActors.add(chosenActor);
+      const chosenEntity = intersection[0];
+      usedEntities.add(chosenEntity);
 
-      // Add the chosen actor to the row
-      row.push([chosenActor]);
+      // Add the chosen entity to the row
+      row.push([chosenEntity]);
     }
     // Add the completed row to the matrix
     matrix.push(row);
@@ -117,8 +118,8 @@ export async function GET() {
   // Return the generated data
   return new Response(
     JSON.stringify({
-      directors: { rows: rowDirectors, cols: colDirectors },
-      actors: matrix,
+      attributes: { rows: rowAttributes, cols: colAttributes },
+      entities: matrix,
       uuid: uuid,
       message: "success",
     }),
