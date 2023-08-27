@@ -1,0 +1,102 @@
+[
+  {
+    "id": 1,
+    "name": "Leonardo DiCaprio",
+    "directors": ["Martin Scorsese", "Christopher Nolan"]
+  },
+  {
+    "id": 2,
+    "name": "Meryl Streep",
+    "directors": ["Steven Spielberg", "Wes Craven"]
+  },
+  {
+    "id": 3,
+    "name": "Robert De Niro",
+    "directors": ["Martin Scorsese", "Francis Ford Coppola"]
+  },
+  {
+    "id": 4,
+    "name": "Tom Hanks",
+    "directors": ["Steven Spielberg", "Ron Howard"]
+  },
+  {
+    "id": 5,
+    "name": "Denzel Washington",
+    "directors": ["Spike Lee", "Antoine Fuqua"]
+  },
+  {
+    "id": 6,
+    "name": "Matt Damon",
+    "directors": ["Steven Spielberg", "Christopher Nolan"]
+  },
+  {
+    "id": 7,
+    "name": "Natalie Portman",
+    "directors": ["Darren Aronofsky", "George Lucas"]
+  },
+  {
+    "id": 8,
+    "name": "Cate Blanchett",
+    "directors": ["Steven Spielberg", "Wes Anderson"]
+  },
+  {
+    "id": 9,
+    "name": "Morgan Freeman",
+    "directors": ["Christopher Nolan", "Steven Spielberg"]
+  },
+  {
+    "id": 10,
+    "name": "Brad Pitt",
+    "directors": ["David Fincher", "Quentin Tarantino"]
+  },
+  {
+    "id": 11,
+    "name": "Kate Winslet",
+    "directors": ["James Cameron", "Danny Boyle"]
+  },
+  {
+    "id": 12,
+    "name": "Ryan Gosling",
+    "directors": ["Damien Chazelle", "Denis Villeneuve"]
+  },
+  {
+    "id": 13,
+    "name": "Jennifer Lawrence",
+    "directors": ["David O. Russell", "Francis Lawrence"]
+  },
+  {
+    "id": 14,
+    "name": "George Clooney",
+    "directors": ["Steven Soderbergh", "Joel Coen"]
+  },
+  {
+    "id": 15,
+    "name": "Julia Roberts",
+    "directors": ["Steven Spielberg", "Garry Marshall"]
+  },
+  {
+    "id": 16,
+    "name": "Sandra Bullock",
+    "directors": ["Alfonso Cuarón", "Paul Feig"]
+  },
+  {
+    "id": 17,
+    "name": "Tom Cruise",
+    "directors": ["Steven Spielberg", "Christopher McQuarrie"]
+  },
+  {
+    "id": 18,
+    "name": "Amy Adams",
+    "directors": ["Denis Villeneuve", "David O. Russell"]
+  },
+  {
+    "id": 19,
+    "name": "Charlize Theron",
+    "directors": ["George Miller", "F. Gary Gray"]
+  },
+  {
+    "id": 20,
+    "name": "Chris Hemsworth",
+    "directors": ["Taika Waititi", "Ron Howard"]
+  }
+]
