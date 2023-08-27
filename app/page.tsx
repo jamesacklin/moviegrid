@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, FC } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 interface AttributeList {
   rows: string[];
@@ -20,13 +21,29 @@ const HomePage: FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch("/api"); // replace with your API endpoint
-      const result: ApiResponse = await response.json();
-      if (result.message !== "success") {
-        setError(result.message);
-        return;
+      try {
+        const uuid = uuidv4();
+        const response = await fetch(`/api`, {
+          headers: {
+            "X-Request-UUID": uuid,
+          },
+        });
+
+        if (!response.ok) {
+          setError("API fetch failed");
+          return;
+        }
+
+        const result: ApiResponse = await response.json();
+
+        if (result.message !== "success") {
+          setError(result.message);
+          return;
+        }
+        setData(result);
+      } catch (e) {
+        setError(`An error occurred: ${e}`);
       }
-      setData(result);
     };
 
     fetchData();
@@ -36,11 +53,11 @@ const HomePage: FC = () => {
     return <div>Loading...</div>;
   }
 
-  const { attributes, entities } = data;
-
   if (error) {
     return <div>{error}</div>;
   }
+
+  const { attributes, entities } = data;
 
   return (
     <table className="table-auto w-full border-collapse">

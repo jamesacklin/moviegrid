@@ -1,6 +1,6 @@
+import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
-import { v4 as uuidv4 } from "uuid";
 import seedrandom from "seedrandom";
 
 // Define the structure for Entity data
@@ -29,9 +29,21 @@ const shuffle = (array: Array<string>, rng: () => number) => {
   return array;
 };
 
-export async function GET() {
-  // Generate a unique identifier
-  const uuid = uuidv4();
+export async function GET(req: Request) {
+  const uuid = req.headers.get("X-Request-UUID");
+
+  if (!uuid) {
+    return NextResponse.json(
+      { message: "UUID not provided" },
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+
   // Create a random number generator based on the UUID
   const rng = seedrandom(uuid);
 
@@ -57,8 +69,8 @@ export async function GET() {
 
   // Check if there are at least 6 eligible attributes
   if (eligibleAttributes.length < 6) {
-    return new Response(
-      JSON.stringify({ message: "Not enough eligible attributes" }),
+    return NextResponse.json(
+      { message: "Not enough eligible attributes" },
       {
         status: 200,
         headers: {
@@ -89,11 +101,11 @@ export async function GET() {
 
       // Ensure at least one entity intersection exists
       if (intersection.length < 1) {
-        return new Response(
-          JSON.stringify({
+        return NextResponse.json(
+          {
             message:
               "Not enough entity/attribute intersections for a 3x3 matrix",
-          }),
+          },
           {
             status: 200,
             headers: {
@@ -115,14 +127,13 @@ export async function GET() {
     matrix.push(row);
   }
 
-  // Return the generated data
-  return new Response(
-    JSON.stringify({
+  return NextResponse.json(
+    {
       attributes: { rows: rowAttributes, cols: colAttributes },
       entities: matrix,
       uuid: uuid,
       message: "success",
-    }),
+    },
     {
       status: 200,
       headers: {
