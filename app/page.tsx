@@ -108,7 +108,6 @@ const HomePage: FC = () => {
             });
             const result: ResultResponse = await submitData.json();
             const { score, resultMatrix } = result;
-            console.log(resultMatrix);
             setScore(score);
             setResultMatrix(resultMatrix);
           } catch (error) {

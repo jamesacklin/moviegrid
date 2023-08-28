@@ -171,9 +171,7 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   const { inputs, matrix } = await req.json();
-
   const { score, resultMatrix } = matchScoreAndMatrix(inputs, matrix);
-  console.log(resultMatrix);
   return NextResponse.json(
     { score: score, resultMatrix: resultMatrix, message: "success" },
     { status: 200 }
