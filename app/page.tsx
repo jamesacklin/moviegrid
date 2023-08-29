@@ -145,7 +145,7 @@ const HomePage: FC = () => {
                         className="border border-gray-400 p-2"
                         key={cellIndex}
                       >
-                        {cell}
+                        <div className="text-xs text-gray-400">{cell}</div>
                         <Field
                           className="border-2"
                           type="text"
