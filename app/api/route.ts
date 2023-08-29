@@ -1,23 +1,11 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
 import seedrandom from "seedrandom";
+import Airtable from "airtable";
 
 // Define the structure for Entity data
 interface Entity {
-  id: number;
   name: string;
   attributes: string[];
-}
-
-// Read the entity data from a JSON file
-const filePath = path.join(process.cwd(), "data.json");
-let entities: Entity[] = [];
-try {
-  const fileData = fs.readFileSync(filePath, "utf8");
-  entities = JSON.parse(fileData);
-} catch (error) {
-  console.log(error);
 }
 
 // Shuffle an array in a predictable manner
@@ -56,8 +44,47 @@ function matchScoreAndMatrix(inputs: any, matrix: any) {
 }
 
 export async function GET(req: Request) {
+  // List of entities to be populated from Airtable
+  const entities: Entity[] = [];
+
+  // Initialize Airtable base
+  const base = new Airtable({
+    apiKey: process.env.AIRTABLE_KEY,
+  }).base(process.env.AIRTABLE_BASE || "");
+
+  // Fetch all records from the Actors table
+  try {
+    await base("Actors")
+      .select({})
+      .eachPage((records, fetchNextPage) => {
+        records.forEach((record) => {
+          const rawName = record.get("Name");
+          const rawAttributes = record.get("Attributes");
+          // Ensure the data is in the expected format
+          if (
+            typeof rawName === "string" &&
+            Array.isArray(rawAttributes) &&
+            rawAttributes.every((attr) => typeof attr === "string")
+          ) {
+            const entity: Entity = {
+              name: rawName,
+              attributes: rawAttributes,
+            };
+            // Add the entity to the list
+            entities.push(entity);
+          }
+        });
+        // Fetch the next page of records
+        fetchNextPage();
+      });
+  } catch (err) {
+    console.error(err);
+  }
+
+  // Get the UUID from the request headers
   const uuid = req.headers.get("X-Request-UUID");
 
+  // Ensure the UUID is provided
   if (!uuid) {
     return NextResponse.json(
       { message: "UUID not provided" },
