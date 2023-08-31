@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, FC } from "react";
+import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
-import { Formik, Field, Form } from "formik";
+import InputField from "./components/InputField";
 
 interface AttributeList {
   rows: string[];
@@ -79,103 +80,91 @@ const HomePage: FC = () => {
   }
 
   const { attributes, entities } = data;
+  const selectOptions = _.map(_.flatten(entities), (entity) => {
+    return { value: entity[0] };
+  });
+
+  async function handleSubmit(e: any) {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    const answers = [];
+    for (var pair of formData.entries()) {
+      answers.push(pair[1]);
+    }
+
+    const submitData = await fetch(`/api`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        inputs: answers,
+        matrix: entities,
+      }),
+    }).catch((error) => {
+      console.error("Error submitting the form:", error);
+    });
+
+    if (submitData) {
+      const result: ResultResponse = await submitData.json();
+      const { score, resultMatrix } = result;
+      setScore(score);
+      setResultMatrix(resultMatrix);
+      setSubmitted(true);
+    }
+  }
 
   return (
     <div className="relative">
-      <Formik
-        initialValues={{
-          0x0: "",
-          0x1: "",
-          0x2: "",
-          10: "",
-          11: "",
-          12: "",
-          20: "",
-          21: "",
-          22: "",
-        }}
-        onSubmit={async (values, { setSubmitting }) => {
-          try {
-            const submitData = await fetch(`/api`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                inputs: getSortedValues(values as NumericKeyObject),
-                matrix: entities,
-              }),
-            });
-            const result: ResultResponse = await submitData.json();
-            const { score, resultMatrix } = result;
-            setScore(score);
-            setResultMatrix(resultMatrix);
-          } catch (error) {
-            console.error("Error submitting the form:", error);
-          } finally {
-            setSubmitted(true);
-            setSubmitting(false);
-          }
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <table className="table-auto w-full border-collapse">
-              <thead>
-                <tr>
-                  <th className="border border-gray-400 p-2"></th>
-                  {attributes.cols.map((colDir, index) => (
-                    <th
-                      className="text-left border border-gray-400 p-2"
-                      key={index}
-                    >
-                      {colDir}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {entities.map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    <td className="font-bold border border-gray-400 p-2">
-                      {attributes.rows[rowIndex]}
-                    </td>
-                    {row.map((cell, cellIndex) => (
-                      <td
-                        className="border border-gray-400 p-2"
-                        key={cellIndex}
-                      >
-                        <div className="text-xs text-gray-400">{cell}</div>
-                        <Field
-                          className="border-2"
-                          type="text"
-                          disabled={submitted}
-                          id={parseInt(
-                            rowIndex.toString() + cellIndex.toString()
-                          )}
-                          name={parseInt(
-                            rowIndex.toString() + cellIndex.toString()
-                          )}
-                        />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {!submitted && !isSubmitting && (
-              <div className="mt-4 text-center">
-                <button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      <form method="post" onSubmit={handleSubmit}>
+        <table className="table-auto w-full border-collapse">
+          <thead>
+            <tr>
+              <th className="border border-gray-400 p-2"></th>
+              {attributes.cols.map((colDir, index) => (
+                <th
+                  className="text-left border border-gray-400 p-2"
+                  key={index}
                 >
-                  Submit
-                </button>
-              </div>
-            )}
-          </Form>
+                  {colDir}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {entities.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                <td className="font-bold border border-gray-400 p-2">
+                  {attributes.rows[rowIndex]}
+                </td>
+                {row.map((cell, cellIndex) => (
+                  <td className="border border-gray-400 p-2" key={cellIndex}>
+                    <p className="text-gray-400 mb-2 text-xs">{cell}</p>
+                    <InputField
+                      name={`${rowIndex}${cellIndex}`}
+                      id={`${rowIndex}${cellIndex}`}
+                      items={selectOptions}
+                    />
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {!submitted && (
+          <div className="mt-4 text-center">
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Submit
+            </button>
+          </div>
         )}
-      </Formik>
+      </form>
       {submitted && resultMatrix && (
         <div className="p-4 text-center">
           <p>Your score is {score}</p>
