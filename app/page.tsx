@@ -28,6 +28,7 @@ const initialValues: NumericKeyObject = {
 const HomePage: FC = () => {
   const [data, setData] = useState<ApiResponse | null>(null);
   const [entities, setEntities] = useState<string[][][]>([]);
+  const [allEntities, setAllEntities] = useState<string[]>([]);
   const [selectOptions, setSelectOptions] = useState<string[]>([]);
   const [usedOptions, setUsedOptions] =
     useState<NumericKeyObject>(initialValues);
@@ -65,20 +66,24 @@ const HomePage: FC = () => {
 
   useEffect(() => {
     if (data) {
-      const { entities } = data;
+      const { entities, allEntities } = data;
       setEntities(entities);
+      setAllEntities(allEntities);
+      setSelectOptions(
+        _.orderBy(allEntities, [(o) => o.toLowerCase()], ["asc"])
+      );
     }
   }, [data]);
 
   useEffect(() => {
     const newSelectOptions = _.difference(
-      _.flattenDeep(entities),
+      allEntities,
       Object.values(usedOptions)
     );
     setSelectOptions(
       _.orderBy(newSelectOptions, [(o) => o.toLowerCase()], ["asc"])
     );
-  }, [usedOptions, entities]);
+  }, [usedOptions, allEntities]);
 
   if (!data) {
     return <div>Loading...</div>;

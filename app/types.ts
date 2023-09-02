@@ -6,6 +6,7 @@ export interface AttributeList {
 export interface ApiResponse {
   attributes: AttributeList;
   entities: string[][][];
+  allEntities: string[];
   uuid: string;
   message: string;
 }

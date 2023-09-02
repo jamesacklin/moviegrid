@@ -184,6 +184,7 @@ export async function GET(req: Request) {
     {
       attributes: { rows: rowAttributes, cols: colAttributes },
       entities: matrix,
+      allEntities: entities.map((entity) => entity.name),
       uuid: uuid,
       message: "success",
     },
