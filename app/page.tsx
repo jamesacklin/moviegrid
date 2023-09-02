@@ -14,15 +14,15 @@ function getSortedValues(obj: NumericKeyObject): string[] {
 }
 
 const initialValues: NumericKeyObject = {
-  0x0: "",
-  0x1: "",
-  0x2: "",
-  10: "",
   11: "",
   12: "",
-  20: "",
+  13: "",
   21: "",
   22: "",
+  23: "",
+  31: "",
+  32: "",
+  33: "",
 };
 
 const HomePage: FC = () => {
@@ -75,7 +75,9 @@ const HomePage: FC = () => {
       _.flattenDeep(entities),
       Object.values(usedOptions)
     );
-    setSelectOptions(newSelectOptions);
+    setSelectOptions(
+      _.orderBy(newSelectOptions, [(o) => o.toLowerCase()], ["asc"])
+    );
   }, [usedOptions, entities]);
 
   if (!data) {
@@ -147,8 +149,8 @@ const HomePage: FC = () => {
                   <td className="border border-gray-400 p-2" key={cellIndex}>
                     <p className="text-gray-400 mb-2 text-xs">{cell}</p>
                     <InputField
-                      name={`${rowIndex}${cellIndex}`}
-                      id={`${rowIndex}${cellIndex}`}
+                      name={`${rowIndex + 1}${cellIndex + 1}`}
+                      id={`${rowIndex + 1}${cellIndex + 1}`}
                       items={selectOptions}
                       changeEvt={(e) => {
                         handleChange(e);
