@@ -67,10 +67,13 @@ const HomePage: FC = () => {
   useEffect(() => {
     if (data) {
       const { entities, allEntities } = data;
+      const randomSize = _.random(1, allEntities.length);
+      const randomElements = _.sampleSize(allEntities, randomSize);
+      const mergedArray = _.union(_.flattenDeep(entities), randomElements);
       setEntities(entities);
-      setAllEntities(allEntities);
+      setAllEntities(mergedArray);
       setSelectOptions(
-        _.orderBy(allEntities, [(o) => o.toLowerCase()], ["asc"])
+        _.orderBy(mergedArray, [(o) => o.toLowerCase()], ["asc"])
       );
     }
   }, [data]);
