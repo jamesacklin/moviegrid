@@ -80,9 +80,7 @@ const HomePage: FC = () => {
   }
 
   const { attributes, entities } = data;
-  const selectOptions = _.map(_.flatten(entities), (entity) => {
-    return { value: entity[0] };
-  });
+  const selectOptions = _.flattenDeep(entities);
 
   async function handleSubmit(e: any) {
     e.preventDefault();
