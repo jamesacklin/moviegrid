@@ -4,28 +4,7 @@ import { useState, useEffect, FC } from "react";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 import InputField from "./components/InputField";
-
-interface AttributeList {
-  rows: string[];
-  cols: string[];
-}
-
-interface ApiResponse {
-  attributes: AttributeList;
-  entities: string[][][];
-  uuid: string;
-  message: string;
-}
-
-interface ResultResponse {
-  score: number;
-  resultMatrix: string[][];
-  message: string;
-}
-
-interface NumericKeyObject {
-  [key: number]: string;
-}
+import { ApiResponse, ResultResponse, NumericKeyObject } from "./types";
 
 function getSortedValues(obj: NumericKeyObject): string[] {
   const keys = Object.keys(obj)
@@ -34,8 +13,24 @@ function getSortedValues(obj: NumericKeyObject): string[] {
   return keys.map((key) => obj[key]);
 }
 
+const initialValues: NumericKeyObject = {
+  0x0: "",
+  0x1: "",
+  0x2: "",
+  10: "",
+  11: "",
+  12: "",
+  20: "",
+  21: "",
+  22: "",
+};
+
 const HomePage: FC = () => {
   const [data, setData] = useState<ApiResponse | null>(null);
+  const [entities, setEntities] = useState<string[][][]>([]);
+  const [selectOptions, setSelectOptions] = useState<string[]>([]);
+  const [usedOptions, setUsedOptions] =
+    useState<NumericKeyObject>(initialValues);
   const [error, setError] = useState<string | null>(null);
   const [score, setScore] = useState<number | null>(null);
   const [resultMatrix, setResultMatrix] = useState<string[][] | null>(null);
@@ -50,14 +45,11 @@ const HomePage: FC = () => {
             "X-Request-UUID": uuid,
           },
         });
-
         if (!response.ok) {
           setError("API fetch failed");
           return;
         }
-
         const result: ApiResponse = await response.json();
-
         if (result.message !== "success") {
           setError(result.message);
           return;
@@ -71,6 +63,21 @@ const HomePage: FC = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (data) {
+      const { entities } = data;
+      setEntities(entities);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    const newSelectOptions = _.difference(
+      _.flattenDeep(entities),
+      Object.values(usedOptions)
+    );
+    setSelectOptions(newSelectOptions);
+  }, [usedOptions, entities]);
+
   if (!data) {
     return <div>Loading...</div>;
   }
@@ -79,19 +86,11 @@ const HomePage: FC = () => {
     return <div>{error}</div>;
   }
 
-  const { attributes, entities } = data;
-  const selectOptions = _.flattenDeep(entities);
+  const { attributes } = data;
 
   async function handleSubmit(e: any) {
     e.preventDefault();
-
-    const formData = new FormData(e.target);
-
-    const answers = [];
-    for (var pair of formData.entries()) {
-      answers.push(pair[1]);
-    }
-
+    const answers = getSortedValues(usedOptions);
     const submitData = await fetch(`/api`, {
       method: "POST",
       headers: {
@@ -104,7 +103,6 @@ const HomePage: FC = () => {
     }).catch((error) => {
       console.error("Error submitting the form:", error);
     });
-
     if (submitData) {
       const result: ResultResponse = await submitData.json();
       const { score, resultMatrix } = result;
@@ -114,9 +112,17 @@ const HomePage: FC = () => {
     }
   }
 
+  function handleChange(e: any) {
+    setUsedOptions((prev) => {
+      const newUsedOptions = { ...prev };
+      newUsedOptions[e.target.id] = e.target.value;
+      return newUsedOptions;
+    });
+  }
+
   return (
     <div className="relative">
-      <form method="post" onSubmit={handleSubmit}>
+      <form method="post" onSubmit={handleSubmit} onChange={handleChange}>
         <table className="table-auto w-full border-collapse">
           <thead>
             <tr>
@@ -144,6 +150,9 @@ const HomePage: FC = () => {
                       name={`${rowIndex}${cellIndex}`}
                       id={`${rowIndex}${cellIndex}`}
                       items={selectOptions}
+                      changeEvt={(e) => {
+                        handleChange(e);
+                      }}
                     />
                   </td>
                 ))}
@@ -151,7 +160,6 @@ const HomePage: FC = () => {
             ))}
           </tbody>
         </table>
-
         {!submitted && (
           <div className="mt-4 text-center">
             <button

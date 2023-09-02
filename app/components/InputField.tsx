@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCombobox } from "downshift";
 import cn from "classnames";
 
@@ -6,10 +6,20 @@ interface InputFieldProps {
   items: string[] | undefined;
   id: string;
   name: string;
+  changeEvt: (evt: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function InputField({ items, id, name }: InputFieldProps) {
+export default function InputField({
+  items,
+  id,
+  name,
+  changeEvt,
+}: InputFieldProps) {
   const [inputItems, setInputItems] = useState(items as string[]);
+
+  useEffect(() => {
+    setInputItems(items as string[]);
+  }, [items]);
 
   const {
     isOpen,
@@ -28,7 +38,13 @@ export default function InputField({ items, id, name }: InputFieldProps) {
         ) as string[]
       );
     },
+    onSelectedItemChange: ({ selectedItem }) => {
+      changeEvt({
+        target: { id: id, value: selectedItem },
+      } as React.ChangeEvent<HTMLInputElement>);
+    },
   });
+
   return (
     <div className="relative">
       <label {...getLabelProps({ htmlFor: name, className: "sr-only" })}>
