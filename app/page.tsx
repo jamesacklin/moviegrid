@@ -2,10 +2,10 @@
 
 import { useState, useEffect, FC } from "react";
 import _ from "lodash";
-import { v4 as uuidv4 } from "uuid";
 import InputField from "./components/InputField";
-import { ApiResponse, ResultResponse, NumericKeyObject } from "./types";
+import { ApiResponse, NumericKeyObject } from "./types";
 
+// Get sorted values from an object with numeric keys
 function getSortedValues(obj: NumericKeyObject): string[] {
   const keys = Object.keys(obj)
     .map(Number)
@@ -13,6 +13,7 @@ function getSortedValues(obj: NumericKeyObject): string[] {
   return keys.map((key) => obj[key]);
 }
 
+// Initial values for used options and score values
 const initialValues: NumericKeyObject = {
   11: "",
   12: "",
@@ -24,6 +25,17 @@ const initialValues: NumericKeyObject = {
   32: "",
   33: "",
 };
+
+// Get a random size between 1 and a given maximum number
+const getRandomSize = (max: number) => _.random(1, max);
+
+// Get random elements from an array based on a given size
+const getRandomElements = (array: string[], size: number) =>
+  _.sampleSize(array, size);
+
+// Merge and flatten arrays
+const mergeAndFlattenArrays = (array1: string[][][], array2: string[]) =>
+  _.union(_.flattenDeep(array1), array2);
 
 const HomePage: FC = () => {
   const [data, setData] = useState<ApiResponse | null>(null);
@@ -37,15 +49,33 @@ const HomePage: FC = () => {
     useState<NumericKeyObject>(initialValues);
   const [guessesLeft, setGuessesLeft] = useState<number>(9);
 
+  const updateOptionStates = (
+    entities: string[][][],
+    mergedArray: string[]
+  ) => {
+    setEntities(entities);
+    setAllEntities(mergedArray);
+    setSelectOptions(_.orderBy(mergedArray, [(o) => o.toLowerCase()], ["asc"]));
+  };
+
+  // Filter out used options from all entities
+  const filterUsedOptions = (
+    allEntities: string[],
+    usedOptions: NumericKeyObject
+  ) => {
+    return _.difference(allEntities, Object.values(usedOptions));
+  };
+
+  // Sort entities alphabetically
+  const sortEntities = (entities: string[]) => {
+    return _.orderBy(entities, [(o) => o.toLowerCase()], ["asc"]);
+  };
+
+  // Fetch initial data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const uuid = uuidv4();
-        const response = await fetch(`/api`, {
-          headers: {
-            "X-Request-UUID": uuid,
-          },
-        });
+        const response = await fetch(`/api`);
         if (!response.ok) {
           setError("API fetch failed");
           return;
@@ -60,62 +90,62 @@ const HomePage: FC = () => {
         setError(`An error occurred: ${e}`);
       }
     };
-
     fetchData();
   }, []);
 
+  // Get all entites in play, plus a random selection of entities
+  // to be used as select options
   useEffect(() => {
-    if (data) {
-      const { entities, allEntities } = data;
-      const randomSize = _.random(1, allEntities.length);
-      const randomElements = _.sampleSize(allEntities, randomSize);
-      const mergedArray = _.union(_.flattenDeep(entities), randomElements);
-      setEntities(entities);
-      setAllEntities(mergedArray);
-      setSelectOptions(
-        _.orderBy(mergedArray, [(o) => o.toLowerCase()], ["asc"])
-      );
-    }
+    if (!data) return;
+    const { entities, allEntities } = data;
+    const randomSize = getRandomSize(allEntities.length);
+    const randomElements = getRandomElements(allEntities, randomSize);
+    const mergedArray = mergeAndFlattenArrays(entities, randomElements);
+    updateOptionStates(entities, mergedArray);
   }, [data]);
 
+  // Filter out used options from select options and update the state
   useEffect(() => {
-    const newSelectOptions = _.difference(
-      allEntities,
-      Object.values(usedOptions)
-    );
-    setSelectOptions(
-      _.orderBy(newSelectOptions, [(o) => o.toLowerCase()], ["asc"])
-    );
+    const updateSelectOptions = () => {
+      const filteredEntities = filterUsedOptions(allEntities, usedOptions);
+      const sortedEntities = sortEntities(filteredEntities);
+      setSelectOptions(sortedEntities);
+    };
+
+    updateSelectOptions();
   }, [usedOptions, allEntities]);
 
+  // Handle data loading
   if (!data) {
     return <div>Loading...</div>;
   }
 
+  // Handle errors
   if (error) {
     return <div>{error}</div>;
   }
 
+  // Destructure data
   const { attributes } = data;
 
+  // Handle input field change
   function handleChange(e: any) {
-    if (e.target.answer === "true") {
-      setUsedOptions((prev) => {
-        const newUsedOptions = { ...prev };
-        newUsedOptions[e.target.id] = e.target.value;
-        return newUsedOptions;
-      });
-      setScoreValues((prev) => {
-        const id = parseInt(e.target.id);
-        const newScoreValues = { ...prev };
-        newScoreValues[id] = e.target.answer;
-        return newScoreValues;
-      });
+    const { answer, id, value } = e.target;
+    const updateUsedOptions = (prev: any) => {
+      return { ...prev, [id]: value };
+    };
+    const updateScoreValues = (prev: any) => {
+      return { ...prev, [parseInt(id)]: answer };
+    };
+    if (answer === "true") {
+      setUsedOptions(updateUsedOptions);
+      setScoreValues(updateScoreValues);
     } else {
       setGuessesLeft((prev) => prev - 1);
     }
   }
 
+  // Render the emoji scoring grid
   const renderRow = (row: number): string => {
     return [1, 2, 3]
       .map((col) => {
@@ -128,11 +158,14 @@ const HomePage: FC = () => {
   return (
     <div className="relative px-4">
       <div className="text-center m-4">
-        {guessesLeft !== 0 && (
+        {/* Number of guesses left */}
+        {guessesLeft !== 0 &&
+        _.countBy(scoreValues, (v) => v === "true").true !== 9 ? (
           <span className="text-gray-900 text-xl">
             You have {guessesLeft} guesses left
           </span>
-        )}
+        ) : null}
+        {/* Final score */}
         {guessesLeft === 0 ||
         _.countBy(scoreValues, (v) => v === "true").true === 9 ? (
           <span className="text-gray-900 text-xl">
@@ -141,7 +174,9 @@ const HomePage: FC = () => {
           </span>
         ) : null}
       </div>
-      {guessesLeft !== 0 && (
+      {/* Main immaculate grid table */}
+      {guessesLeft !== 0 &&
+      _.countBy(scoreValues, (v) => v === "true").true !== 9 ? (
         <table className="table-auto w-full border-collapse">
           <thead>
             <tr>
@@ -178,7 +213,8 @@ const HomePage: FC = () => {
             ))}
           </tbody>
         </table>
-      )}
+      ) : null}
+      {/* Emoji scoring grid */}
       {guessesLeft === 0 ||
       _.countBy(scoreValues, (v) => v === "true").true === 9 ? (
         <div className="flex flex-col justify-center items-center mt-4 ">
