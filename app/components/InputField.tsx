@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useCombobox } from "downshift";
 import cn from "classnames";
-import { set } from "lodash";
 
 interface InputFieldProps {
   items: string[] | undefined;
@@ -25,7 +24,6 @@ export default function InputField({
   changeEvt,
 }: InputFieldProps) {
   const [inputItems, setInputItems] = useState(items as string[]);
-  const [guessed, setGuessed] = useState(false);
   const [correct, setCorrect] = useState(false);
 
   useEffect(() => {
@@ -61,7 +59,6 @@ export default function InputField({
           answer: answer.toString(),
         },
       } as unknown as React.ChangeEvent<HTMLInputElement>);
-      setGuessed(true);
       setCorrect(answer);
     },
   });
@@ -79,8 +76,8 @@ export default function InputField({
             placeholder: "Enter an actor",
             id: id,
             name: name,
-            disabled: guessed,
-            readOnly: guessed,
+            disabled: correct,
+            readOnly: correct,
             className: cn(
               "border border-gray-400 focus:border-gray-900 outline-none focus:outline-none p-2 w-full",
               {
@@ -89,14 +86,12 @@ export default function InputField({
               },
               {
                 "border-green-500 bg-green-100 rounded-lg text-green-500":
-                  guessed && correct,
-                "border-red-500 bg-red-100 rounded-lg text-red-500":
-                  guessed && !correct,
+                  correct,
               }
             ),
           })}
         />
-        {!guessed && (
+        {!correct && (
           <button
             type="button"
             aria-label="toggle menu"
