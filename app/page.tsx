@@ -49,6 +49,7 @@ const HomePage: FC = () => {
     useState<NumericKeyObject>(initialValues);
   const [guessesLeft, setGuessesLeft] = useState<number>(9);
 
+  // Update entities, all entities and select options
   const updateOptionStates = (
     entities: string[][][],
     mergedArray: string[]
@@ -155,28 +156,29 @@ const HomePage: FC = () => {
       .join(" ");
   };
 
+  // Calculate score
+  const score = () => {
+    return _.countBy(scoreValues, (v) => v === "true").true || 0;
+  };
+
   return (
     <div className="relative px-4">
       <div className="text-center m-4">
         {/* Number of guesses left */}
-        {guessesLeft !== 0 &&
-        _.countBy(scoreValues, (v) => v === "true").true !== 9 ? (
+        {guessesLeft !== 0 && score() !== 9 ? (
           <span className="text-gray-900 text-xl">
             You have {guessesLeft} guesses left
           </span>
         ) : null}
         {/* Final score */}
-        {guessesLeft === 0 ||
-        _.countBy(scoreValues, (v) => v === "true").true === 9 ? (
+        {guessesLeft === 0 || score() === 9 ? (
           <span className="text-gray-900 text-xl">
-            You got {_.countBy(scoreValues, (v) => v === "true").true || 0}/9
-            correct
+            You got {score()}/9 correct
           </span>
         ) : null}
       </div>
       {/* Main immaculate grid table */}
-      {guessesLeft !== 0 &&
-      _.countBy(scoreValues, (v) => v === "true").true !== 9 ? (
+      {guessesLeft !== 0 && score() !== 9 ? (
         <table className="table-auto w-full border-collapse">
           <thead>
             <tr>
@@ -215,8 +217,7 @@ const HomePage: FC = () => {
         </table>
       ) : null}
       {/* Emoji scoring grid */}
-      {guessesLeft === 0 ||
-      _.countBy(scoreValues, (v) => v === "true").true === 9 ? (
+      {guessesLeft === 0 || score() === 9 ? (
         <div className="flex flex-col justify-center items-center mt-4 ">
           <pre className="rounded-lg bg-gray-100 p-4">
             {[1, 2, 3].map((row) => (
