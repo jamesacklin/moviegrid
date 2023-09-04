@@ -33,9 +33,8 @@ const HomePage: FC = () => {
   const [usedOptions, setUsedOptions] =
     useState<NumericKeyObject>(initialValues);
   const [error, setError] = useState<string | null>(null);
-  const [score, setScore] = useState<number | null>(null);
-  const [resultMatrix, setResultMatrix] = useState<string[][] | null>(null);
-  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [scoreValues, setScoreValues] =
+    useState<NumericKeyObject>(initialValues);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,95 +97,82 @@ const HomePage: FC = () => {
 
   const { attributes } = data;
 
-  async function handleSubmit(e: any) {
-    e.preventDefault();
-    const answers = getSortedValues(usedOptions);
-    const submitData = await fetch(`/api`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        inputs: answers,
-        matrix: entities,
-      }),
-    }).catch((error) => {
-      console.error("Error submitting the form:", error);
-    });
-    if (submitData) {
-      const result: ResultResponse = await submitData.json();
-      const { score, resultMatrix } = result;
-      setScore(score);
-      setResultMatrix(resultMatrix);
-      setSubmitted(true);
+  function handleChange(e: any) {
+    if (e.target.answer === "true") {
+      setUsedOptions((prev) => {
+        const newUsedOptions = { ...prev };
+        newUsedOptions[e.target.id] = e.target.value;
+        return newUsedOptions;
+      });
     }
+    setScoreValues((prev) => {
+      const id = parseInt(e.target.id);
+      const newScoreValues = { ...prev };
+      newScoreValues[id] = e.target.answer;
+      return newScoreValues;
+    });
   }
 
-  function handleChange(e: any) {
-    setUsedOptions((prev) => {
-      const newUsedOptions = { ...prev };
-      newUsedOptions[e.target.id] = e.target.value;
-      return newUsedOptions;
-    });
-  }
+  const renderRow = (row: number): string => {
+    return [1, 2, 3]
+      .map((col) => {
+        const key = parseInt(`${row}${col}`);
+        if (scoreValues[key] === "") {
+          return "⬜";
+        }
+        return scoreValues[key] === "true" ? "✅" : "❌";
+      })
+      .join(" ");
+  };
 
   return (
     <div className="relative">
-      <form method="post" onSubmit={handleSubmit} onChange={handleChange}>
-        <table className="table-auto w-full border-collapse">
-          <thead>
-            <tr>
-              <th className="border border-gray-400 p-2"></th>
-              {attributes.cols.map((colDir, index) => (
-                <th
-                  className="text-left border border-gray-400 p-2"
-                  key={index}
-                >
-                  {colDir}
-                </th>
+      <table className="table-auto w-full border-collapse">
+        <thead>
+          <tr>
+            <th className="border border-gray-400 p-2"></th>
+            {attributes.cols.map((colDir, index) => (
+              <th className="text-left border border-gray-400 p-2" key={index}>
+                {colDir}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {entities.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              <td className="font-bold border border-gray-400 p-2">
+                {attributes.rows[rowIndex]}
+              </td>
+              {row.map((cell, cellIndex) => (
+                <td className="border border-gray-400 p-2" key={cellIndex}>
+                  <p className="text-gray-400 mb-2 text-xs">{cell}</p>
+                  <InputField
+                    name={`${rowIndex + 1}${cellIndex + 1}`}
+                    id={`${rowIndex + 1}${cellIndex + 1}`}
+                    cell={cell[0]}
+                    items={selectOptions}
+                    changeEvt={handleChange}
+                  />
+                </td>
               ))}
             </tr>
-          </thead>
-          <tbody>
-            {entities.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                <td className="font-bold border border-gray-400 p-2">
-                  {attributes.rows[rowIndex]}
-                </td>
-                {row.map((cell, cellIndex) => (
-                  <td className="border border-gray-400 p-2" key={cellIndex}>
-                    <p className="text-gray-400 mb-2 text-xs">{cell}</p>
-                    <InputField
-                      name={`${rowIndex + 1}${cellIndex + 1}`}
-                      id={`${rowIndex + 1}${cellIndex + 1}`}
-                      items={selectOptions}
-                      changeEvt={(e) => {
-                        handleChange(e);
-                      }}
-                    />
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {!submitted && (
-          <div className="mt-4 text-center">
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              Submit
-            </button>
-          </div>
-        )}
-      </form>
-      {submitted && resultMatrix && (
-        <div className="p-4 text-center">
-          <p>Your score is {score}</p>
-          <pre>{resultMatrix.map((row) => row.join(" ")).join("\n")}</pre>
-        </div>
-      )}
+          ))}
+        </tbody>
+      </table>
+      <div className="flex flex-col justify-center items-center mt-4 ">
+        <pre className="rounded-lg bg-gray-100 p-4">
+          {[1, 2, 3].map((row) => (
+            <div key={row}>{renderRow(row)}</div>
+          ))}
+        </pre>
+        <span className="text-gray-400 text-xs text-center max-w-sm mt-4">
+          This is a preview of what the user will tweet with a link to the site.
+          <br />
+          Will be shown on completion or after clicking a &ldquo;give up&rdquo;
+          button.
+        </span>
+      </div>
     </div>
   );
 };

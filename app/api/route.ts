@@ -17,32 +17,6 @@ const shuffle = (array: Array<string>, rng: () => number) => {
   return array;
 };
 
-// Calculate the score and matrix for a given set of inputs and target array
-function matchScoreAndMatrix(inputs: any, matrix: any) {
-  let score = 0;
-  let resultMatrix: string[][] = [[], [], []];
-
-  for (let i = 0; i < 9; i++) {
-    // Fixed-size loop to always handle 3x3
-    let row = Math.floor(i / 3);
-    let col = i % 3;
-
-    if (inputs[i] && matrix[row] && matrix[row][col]) {
-      if (inputs[i] === matrix[row][col][0]) {
-        score++;
-        resultMatrix[row].push("✅");
-      } else {
-        resultMatrix[row].push("⬜");
-      }
-    } else {
-      // Handle incomplete data
-      resultMatrix[row].push("⬜");
-    }
-  }
-
-  return { score, resultMatrix };
-}
-
 export async function GET(req: Request) {
   // List of entities to be populated from Airtable
   const entities: Entity[] = [];
@@ -194,14 +168,5 @@ export async function GET(req: Request) {
         "Content-Type": "application/json",
       },
     }
-  );
-}
-
-export async function POST(req: Request) {
-  const { inputs, matrix } = await req.json();
-  const { score, resultMatrix } = matchScoreAndMatrix(inputs, matrix);
-  return NextResponse.json(
-    { score: score, resultMatrix: resultMatrix, message: "success" },
-    { status: 200 }
   );
 }

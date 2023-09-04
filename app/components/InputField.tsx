@@ -1,21 +1,32 @@
 import { useEffect, useState } from "react";
 import { useCombobox } from "downshift";
 import cn from "classnames";
+import { set } from "lodash";
 
 interface InputFieldProps {
   items: string[] | undefined;
   id: string;
   name: string;
+  cell: string;
   changeEvt: (evt: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function insensitiveMatch(str1: string, str2: string) {
+  const cleanedStr1 = str1.replace(/\s+/g, "").toLowerCase();
+  const cleanedStr2 = str2.replace(/\s+/g, "").toLowerCase();
+  return cleanedStr1 === cleanedStr2;
 }
 
 export default function InputField({
   items,
   id,
   name,
+  cell,
   changeEvt,
 }: InputFieldProps) {
   const [inputItems, setInputItems] = useState(items as string[]);
+  const [guessed, setGuessed] = useState(false);
+  const [correct, setCorrect] = useState(false);
 
   useEffect(() => {
     setInputItems(items as string[]);
@@ -39,9 +50,19 @@ export default function InputField({
       );
     },
     onSelectedItemChange: ({ selectedItem }) => {
+      let answer = false;
+      if (insensitiveMatch(selectedItem || "", cell)) {
+        answer = true;
+      }
       changeEvt({
-        target: { id: id, value: selectedItem },
-      } as React.ChangeEvent<HTMLInputElement>);
+        target: {
+          id: parseInt(id),
+          value: selectedItem,
+          answer: answer.toString(),
+        },
+      } as unknown as React.ChangeEvent<HTMLInputElement>);
+      setGuessed(true);
+      setCorrect(answer);
     },
   });
 
@@ -58,27 +79,37 @@ export default function InputField({
             placeholder: "Enter an actor",
             id: id,
             name: name,
+            disabled: guessed,
+            readOnly: guessed,
             className: cn(
               "border border-gray-400 focus:border-gray-900 outline-none focus:outline-none p-2 w-full",
               {
                 "rounded-tl-lg": isOpen,
                 "rounded-l-lg": !isOpen,
+              },
+              {
+                "border-green-500 bg-green-100 rounded-lg text-green-500":
+                  guessed && correct,
+                "border-red-500 bg-red-100 rounded-lg text-red-500":
+                  guessed && !correct,
               }
             ),
           })}
         />
-        <button
-          type="button"
-          aria-label="toggle menu"
-          {...getToggleButtonProps({
-            className: cn("border border-gray-400 border-l-0 px-2", {
-              "rounded-tr-lg": isOpen,
-              "rounded-r-lg": !isOpen,
-            }),
-          })}
-        >
-          {isOpen ? "↑" : "↓"}
-        </button>
+        {!guessed && (
+          <button
+            type="button"
+            aria-label="toggle menu"
+            {...getToggleButtonProps({
+              className: cn("border border-gray-400 border-l-0 px-2", {
+                "rounded-tr-lg": isOpen,
+                "rounded-r-lg": !isOpen,
+              }),
+            })}
+          >
+            {isOpen ? "↑" : "↓"}
+          </button>
+        )}
       </div>
       <ul
         {...getMenuProps({
