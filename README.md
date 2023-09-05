@@ -1,4 +1,12 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# MovieGrid
+
+An (Immaculate Grid)[http://immaculategrid.com]-style game where the player matches actors with pairs of directors they've worked with. Completed as a fun side-project for my wife's co-worker.
+
+[Preview](https://moviegrid-six.vercel.app)
+
+To play the game, use the auto-complete typeahead / dropdown fields to select actors that have worked with directors identified in corresponding the column and row labels. You have 9 guesses to fill out the grid. Wrong answers will cost you a guess, correct answers will not. When you run out of guesses or achieve a perfect score, the game will tell you your score and present an emoji grid (for social media sharing etc).
+
+Uses [Next.js](https://nextjs.org/) with [Airtable](https://airtable.com) for storing the list of actors (and their associated directors).
 
 ## Getting Started
 
