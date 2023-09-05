@@ -48,6 +48,7 @@ const HomePage: FC = () => {
   const [scoreValues, setScoreValues] =
     useState<NumericKeyObject>(initialValues);
   const [guessesLeft, setGuessesLeft] = useState<number>(9);
+  const [isShiftPressed, setIsShiftPressed] = useState(false);
 
   // Update entities, all entities and select options
   const updateOptionStates = (
@@ -71,6 +72,32 @@ const HomePage: FC = () => {
   const sortEntities = (entities: string[]) => {
     return _.orderBy(entities, [(o) => o.toLowerCase()], ["asc"]);
   };
+
+  // Event listener function for keydown event
+  const handleKeyDown = (event: { key: string }) => {
+    if (event.key === "Shift") {
+      setIsShiftPressed(true);
+    }
+  };
+
+  // Event listener function for keyup event
+  const handleKeyUp = (event: { key: string }) => {
+    if (event.key === "Shift") {
+      setIsShiftPressed(false);
+    }
+  };
+
+  // Attach and clean up shift listeners
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    // Cleanup the event listeners when the component unmounts
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []); // Empty dependency array ensures this runs only on mount and unmount
 
   // Fetch initial data
   useEffect(() => {
@@ -201,7 +228,9 @@ const HomePage: FC = () => {
                 </td>
                 {row.map((cell, cellIndex) => (
                   <td className="border border-gray-400 p-2" key={cellIndex}>
-                    <p className="text-gray-400 mb-2 text-xs">{cell}</p>
+                    {isShiftPressed && (
+                      <p className="text-gray-400 mb-2 text-xs">{cell}</p>
+                    )}
                     <InputField
                       name={`${rowIndex + 1}${cellIndex + 1}`}
                       id={`${rowIndex + 1}${cellIndex + 1}`}
