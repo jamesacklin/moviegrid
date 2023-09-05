@@ -1,6 +1,6 @@
 # MovieGrid
 
-An (Immaculate Grid)[http://immaculategrid.com]-style game where the player matches actors with pairs of directors they've worked with. Completed as a fun side-project for my wife's co-worker.
+An (Immaculate Grid)[http://immaculategrid.com]-style game where the player matches actors with pairs of directors they've worked with. Completed as a fun side-project for my wife's co-worker over Labor Day weekend 2023.
 
 [Preview](https://moviegrid-six.vercel.app)
 
