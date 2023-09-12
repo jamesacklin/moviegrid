@@ -4,6 +4,34 @@ import { useState, useEffect, FC } from "react";
 import _ from "lodash";
 import InputField from "./components/InputField";
 import { ApiResponse, NumericKeyObject } from "./types";
+import crypto from "crypto";
+
+// Generate a UUID based on the current date
+function generateDateBasedUUID() {
+  // Get the current date in ISO format and hash it
+  const today = new Date().toISOString().split("T")[0];
+  const hash = crypto.createHash("sha256").update(today).digest("hex");
+
+  // Format the hash as a UUID
+  const time_low = hash.substring(0, 8);
+  const time_mid = hash.substring(8, 12);
+  const time_hi_and_version =
+    (parseInt(hash.substring(12, 16), 16) & 0x0fff) | 0x4000; // Version 4
+  const clock_seq_hi_and_reserved =
+    (parseInt(hash.substring(16, 18), 16) & 0x3f) | 0x80; // Variant is 10
+  const clock_seq_low = hash.substring(18, 20);
+  const node = hash.substring(20, 32); // only taking 12 digits, enough for the node part
+
+  // Convert the UUID parts to strings
+  const time_hi_and_version_str = time_hi_and_version
+    .toString(16)
+    .padStart(4, "0");
+  const clock_seq_hi_and_reserved_str = clock_seq_hi_and_reserved
+    .toString(16)
+    .padStart(2, "0");
+
+  return `${time_low}-${time_mid}-${time_hi_and_version_str}-${clock_seq_hi_and_reserved_str}${clock_seq_low}-${node}`;
+}
 
 // Get sorted values from an object with numeric keys
 function getSortedValues(obj: NumericKeyObject): string[] {
@@ -103,7 +131,12 @@ const HomePage: FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`/api`);
+        const uuid = generateDateBasedUUID();
+        const response = await fetch(`/api`, {
+          headers: {
+            "X-Request-UUID": uuid,
+          },
+        });
         if (!response.ok) {
           setError("API fetch failed");
           return;
